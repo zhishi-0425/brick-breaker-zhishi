@@ -1,0 +1,3 @@
+/home/zhishi/breakout_week2/build/CMakeFiles/breakout_week2.dir
+/home/zhishi/breakout_week2/build/CMakeFiles/edit_cache.dir
+/home/zhishi/breakout_week2/build/CMakeFiles/rebuild_cache.dir
