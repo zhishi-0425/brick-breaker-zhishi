@@ -85,12 +85,12 @@ clean: CMakeFiles/breakout_week2.dir/clean
 CMakeFiles/breakout_week2.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/zhishi/breakout_week2/build/CMakeFiles --progress-num=1,2,3,4,5 "Built target breakout_week2"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/zhishi/breakout_week2/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target breakout_week2"
 .PHONY : CMakeFiles/breakout_week2.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/breakout_week2.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/zhishi/breakout_week2/build/CMakeFiles 5
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/zhishi/breakout_week2/build/CMakeFiles 6
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/breakout_week2.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/zhishi/breakout_week2/build/CMakeFiles 0
 .PHONY : CMakeFiles/breakout_week2.dir/rule
@@ -102,7 +102,7 @@ breakout_week2: CMakeFiles/breakout_week2.dir/rule
 # codegen rule for target.
 CMakeFiles/breakout_week2.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/zhishi/breakout_week2/build/CMakeFiles --progress-num=1,2,3,4,5 "Finished codegen for target breakout_week2"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/zhishi/breakout_week2/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Finished codegen for target breakout_week2"
 .PHONY : CMakeFiles/breakout_week2.dir/codegen
 
 # clean rule for target.

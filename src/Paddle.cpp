@@ -28,6 +28,11 @@ void Paddle::OnCollision(Ball& ball) {
     Vector2 speed = ball.GetSpeed();
     speed.y = -speed.y;                           // 垂直反弹
     float offset = ball.GetPosition().x - (rect.x + rect.width / 2);
-    speed.x += offset * 0.05f;                   // 水平偏移
+    speed.x += offset * 0.02f;                   // 水平偏移
+    
+    // 限制水平速度在 [-8, 8] 之间，防止过快
+    if (speed.x > 8.0f) speed.x = 8.0f;
+    if (speed.x < -8.0f) speed.x = -8.0f;
+
     ball.SetSpeed(speed);
 }

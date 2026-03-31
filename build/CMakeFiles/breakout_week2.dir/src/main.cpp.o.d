@@ -4,7 +4,8 @@ CMakeFiles/breakout_week2.dir/src/main.cpp.o: \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/stdarg.h \
  /home/zhishi/breakout_week2/src/Ball.h \
  /home/zhishi/breakout_week2/src/Paddle.h \
- /home/zhishi/breakout_week2/src/Brick.h /usr/include/c++/11/vector \
+ /home/zhishi/breakout_week2/src/Brick.h \
+ /home/zhishi/breakout_week2/src/GameState.h /usr/include/c++/11/vector \
  /usr/include/c++/11/bits/stl_algobase.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \

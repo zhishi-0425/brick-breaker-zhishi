@@ -3,6 +3,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/breakout_week2.dir/src/Ball.cpp.o.d"
   "CMakeFiles/breakout_week2.dir/src/Brick.cpp.o"
   "CMakeFiles/breakout_week2.dir/src/Brick.cpp.o.d"
+  "CMakeFiles/breakout_week2.dir/src/GameState.cpp.o"
+  "CMakeFiles/breakout_week2.dir/src/GameState.cpp.o.d"
   "CMakeFiles/breakout_week2.dir/src/Paddle.cpp.o"
   "CMakeFiles/breakout_week2.dir/src/Paddle.cpp.o.d"
   "CMakeFiles/breakout_week2.dir/src/main.cpp.o"

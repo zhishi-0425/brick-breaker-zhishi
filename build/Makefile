@@ -177,6 +177,30 @@ src/Brick.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/Brick.cpp.s
 .PHONY : src/Brick.cpp.s
 
+src/GameState.o: src/GameState.cpp.o
+.PHONY : src/GameState.o
+
+# target to build an object file
+src/GameState.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/GameState.cpp.o
+.PHONY : src/GameState.cpp.o
+
+src/GameState.i: src/GameState.cpp.i
+.PHONY : src/GameState.i
+
+# target to preprocess a source file
+src/GameState.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/GameState.cpp.i
+.PHONY : src/GameState.cpp.i
+
+src/GameState.s: src/GameState.cpp.s
+.PHONY : src/GameState.s
+
+# target to generate assembly for a file
+src/GameState.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/GameState.cpp.s
+.PHONY : src/GameState.cpp.s
+
 src/Paddle.o: src/Paddle.cpp.o
 .PHONY : src/Paddle.o
 
@@ -240,6 +264,9 @@ help:
 	@echo "... src/Brick.o"
 	@echo "... src/Brick.i"
 	@echo "... src/Brick.s"
+	@echo "... src/GameState.o"
+	@echo "... src/GameState.i"
+	@echo "... src/GameState.s"
 	@echo "... src/Paddle.o"
 	@echo "... src/Paddle.i"
 	@echo "... src/Paddle.s"

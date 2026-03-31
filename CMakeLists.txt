@@ -8,6 +8,7 @@ add_executable(breakout_week2
     src/Ball.cpp
     src/Paddle.cpp
     src/Brick.cpp
+    src/GameState.cpp
 )
 
 target_link_libraries(breakout_week2 raylib)
