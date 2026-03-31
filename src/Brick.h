@@ -12,6 +12,7 @@ public:
     void Draw();
     bool IsActive() { return active; }
     void SetActive(bool a) { active = a; }
+    Rectangle GetRect() const { return rect; }   // 新增
 };
 
 #endif
