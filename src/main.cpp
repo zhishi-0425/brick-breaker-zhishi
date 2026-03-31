@@ -39,6 +39,12 @@ int main() {
         if (IsKeyDown(KEY_LEFT)) paddle.MoveLeft(5);
         if (IsKeyDown(KEY_RIGHT)) paddle.MoveRight(5);
 
+        // 新增球与板碰撞处理
+        if (paddle.CheckCollision(ball)) 
+        {
+            paddle.OnCollision(ball);
+        }
+
         // 绘制
         BeginDrawing();
         ClearBackground(RAYWHITE);
