@@ -2,26 +2,39 @@
 #include <cstdio>
 #include <nlohmann/json.hpp>
 #include <fstream>
+#include <algorithm>
+#include <cmath>
+#include <cstdlib>
+#include <ctime>
 
 using json = nlohmann::json;
 
 Game::Game()
-    : ball({400, 500}, {0, 0}, 10),
-      paddle(350, 550, 100, 20),
+    : paddle(350, 550, 100, 20),
       score(0),
       lives(3),
       ballLaunched(false),
-      currentState(GameState::PLAYING),  // 为了方便，直接开始游戏，可以后续改为MENU
+      currentState(GameState::PLAYING),
       screenWidth(800),
-      screenHeight(600) {}
+      screenHeight(600),
+      deltaTime(0.0f),
+      slowRemaining(0.0f),
+      slowFactor(0.7f) {
+    srand(time(nullptr));
+}
 
 Game::~Game() {}
 
 void Game::Init() {
-    InitBricks();
-    ball.ResetToPaddle(paddle.GetRect().x + paddle.GetRect().width/2, paddle.GetRect().y);
+    balls.clear();
+    balls.emplace_back(Vector2{400, 500}, Vector2{0, 0}, 10);
     ballLaunched = false;
+    paddle = Paddle(350, 550, 100, 20);
+    InitBricks();
     currentState = GameState::PLAYING;
+    powerUps.clear();
+    particles.clear();
+    slowRemaining = 0.0f;
 }
 
 void Game::InitBricks() {
@@ -40,24 +53,31 @@ void Game::ChangeState(GameState newState) {
 }
 
 void Game::HandleInput() {
-    // 重置游戏（按 R）
+    // 重置
     if (IsKeyPressed(KEY_R)) {
         score = 0;
         lives = 3;
+        balls.clear();
+        balls.emplace_back(Vector2{400, 500}, Vector2{0, 0}, 10);
         ballLaunched = false;
-        ball.ResetToPaddle(paddle.GetRect().x + paddle.GetRect().width/2, paddle.GetRect().y);
+        paddle = Paddle(350, 550, 100, 20);
         InitBricks();
-        ChangeState(GameState::PLAYING);
+        currentState = GameState::PLAYING;
+        powerUps.clear();
+        particles.clear();
+        slowRemaining = 0.0f;
         return;
     }
 
-    // 发射球（仅在游戏中且未发射时）
+    // 发射
     if (currentState == GameState::PLAYING && IsKeyPressed(KEY_SPACE) && !ballLaunched) {
-        ball.Launch(paddle.GetRect().x + paddle.GetRect().width/2, paddle.GetRect().y);
-        ballLaunched = true;
+        if (!balls.empty()) {
+            balls[0].Launch(paddle.GetRect().x + paddle.GetRect().width/2, paddle.GetRect().y);
+            ballLaunched = true;
+        }
     }
 
-    // 暂停（按 P）
+    // 暂停
     if (currentState == GameState::PLAYING && IsKeyPressed(KEY_P)) {
         ChangeState(GameState::PAUSED);
     } else if (currentState == GameState::PAUSED && IsKeyPressed(KEY_P)) {
@@ -70,11 +90,9 @@ void Game::Update() {
     float currentTime = GetTime();
     deltaTime = currentTime - lastTime;
     lastTime = currentTime;
-    if (deltaTime > 0.033f) deltaTime = 0.033f;   // 限制最大帧间隔
+    if (deltaTime > 0.033f) deltaTime = 0.033f;
 
-    // 更新板的效果计时
     paddle.Update(deltaTime);
-
     HandleInput();
 
     switch (currentState) {
@@ -102,32 +120,71 @@ void Game::UpdatePlaying() {
     if (IsKeyDown(KEY_LEFT)) paddle.MoveLeft(5);
     if (IsKeyDown(KEY_RIGHT)) paddle.MoveRight(5);
 
-    // 球移动
-    ball.Move();
-    ball.BounceEdge(screenWidth, screenHeight);
-
-    // 球与板碰撞
-    if (paddle.CheckCollision(ball)) {
-        paddle.OnCollision(ball);
+    // 所有球移动、边界
+    for (auto& ball : balls) {
+        ball.Move();
+        ball.BounceEdge(screenWidth, screenHeight);
     }
 
-    // 球与砖块碰撞
-    for (auto& brick : bricks) {
-        if (brick.IsActive() && ball.CheckBrickCollision(brick.GetRect())) {
-            brick.SetActive(false);
-            score += 10;
-            break;
+    // 球与板碰撞
+    for (auto& ball : balls) {
+        if (paddle.CheckCollision(ball)) {
+            paddle.OnCollision(ball);
         }
     }
 
-    // 球掉出屏幕
-    if (ball.GetPosition().y + ball.GetRadius() > screenHeight) {
+    // 球与砖块碰撞（同一砖块只处理一次）
+    for (auto& brick : bricks) {
+        if (!brick.IsActive()) continue;
+        bool hit = false;
+        for (auto& ball : balls) {
+            if (ball.CheckBrickCollision(brick.GetRect())) {
+                hit = true;
+                break;
+            }
+        }
+        if (hit) {
+            brick.SetActive(false);
+            score += 10;
+
+            // 粒子特效
+            for (int i = 0; i < 10; i++) {
+                Particle p;
+                p.position = { brick.GetRect().x + rand() % (int)brick.GetRect().width,
+                               brick.GetRect().y + rand() % (int)brick.GetRect().height };
+                p.velocity = { (rand()%100 - 50)/10.0f, (rand()%100 - 50)/10.0f };
+                p.color = GREEN;
+                p.life = 0.5f;
+                particles.push_back(p);
+            }
+
+            // 30% 概率生成道具
+            if (rand() % 100 < 30) {
+                PowerUpType type = static_cast<PowerUpType>(rand() % 3);
+                float x = brick.GetRect().x + brick.GetRect().width / 2;
+                float y = brick.GetRect().y;
+                powerUps.emplace_back(x, y, type);
+            }
+        }
+    }
+
+    // 球掉出屏幕：移除超出底部的球
+    bool anyBallActive = false;
+    for (auto it = balls.begin(); it != balls.end(); ) {
+        if (it->GetPosition().y + it->GetRadius() > screenHeight) {
+            it = balls.erase(it);
+        } else {
+            anyBallActive = true;
+            ++it;
+        }
+    }
+    if (!anyBallActive) {
         lives--;
         if (lives <= 0) {
             ChangeState(GameState::GAMEOVER);
         } else {
-            // 重置球到板上方，未发射
-            ball.ResetToPaddle(paddle.GetRect().x + paddle.GetRect().width/2, paddle.GetRect().y);
+            balls.clear();
+            balls.emplace_back(Vector2{400, 500}, Vector2{0, 0}, 10);
             ballLaunched = false;
         }
     }
@@ -143,40 +200,106 @@ void Game::UpdatePlaying() {
     if (allBricksDestroyed) {
         ChangeState(GameState::VICTORY);
     }
+
+    // 道具更新
+    UpdatePowerUps(deltaTime);
+    CheckPowerUpCollision();
+    UpdateParticles(deltaTime);
+
+    // 减速效果倒计时
+    if (slowRemaining > 0) {
+        slowRemaining -= deltaTime;
+    }
 }
 
-void Game::UpdatePaused() {
-    // 暂停时什么都不做，但可以显示提示
+void Game::UpdatePaused() {}
+void Game::UpdateGameOver() {}
+void Game::UpdateVictory() {}
+
+void Game::UpdatePowerUps(float dt) {
+    for (auto& p : powerUps) {
+        p.Update(dt);
+    }
+    powerUps.erase(std::remove_if(powerUps.begin(), powerUps.end(),
+                  [](const PowerUp& p) { return !p.active; }),
+                  powerUps.end());
 }
 
-void Game::UpdateGameOver() {
-    // 游戏结束，等待按 R 重置（已在 HandleInput 中处理）
+void Game::CheckPowerUpCollision() {
+    for (auto& p : powerUps) {
+        if (!p.active) continue;
+        if (CheckCollisionCircleRec(p.position, 12, paddle.GetRect())) {
+            switch (p.type) {
+                case PowerUpType::PADDLE_EXTEND:
+                    paddle.Extend(40.0f, 5.0f);
+                    break;
+                case PowerUpType::MULTI_BALL: {
+                    std::vector<Ball> newBalls;
+                    for (const auto& b : balls) {
+                        Vector2 pos = b.GetPosition();
+                        Vector2 spd = b.GetSpeed();
+                        float angle = (rand() % 60 - 30) * 3.14159f / 180.0f;
+                        float cosA = cos(angle);
+                        float sinA = sin(angle);
+                        Vector2 newSpd = { spd.x * cosA - spd.y * sinA,
+                                           spd.x * sinA + spd.y * cosA };
+                        newBalls.emplace_back(pos, newSpd, b.GetRadius());
+                    }
+                    balls.insert(balls.end(), newBalls.begin(), newBalls.end());
+                    break;
+                }
+                case PowerUpType::SLOW_BALL:
+                    slowRemaining = 5.0f;
+                    for (auto& b : balls) {
+                        Vector2 spd = b.GetSpeed();
+                        b.SetSpeed({spd.x * slowFactor, spd.y * slowFactor});
+                    }
+                    break;
+            }
+            p.active = false;
+        }
+    }
 }
 
-void Game::UpdateVictory() {
-    // 胜利，等待按 R 重置
+void Game::UpdateParticles(float dt) {
+    for (auto& p : particles) {
+        p.position.x += p.velocity.x * dt;
+        p.position.y += p.velocity.y * dt;
+        p.life -= dt;
+    }
+    particles.erase(std::remove_if(particles.begin(), particles.end(),
+                  [](const Particle& p) { return p.life <= 0; }),
+                  particles.end());
+}
+
+void Game::DrawParticles() {
+    for (auto& p : particles) {
+        DrawCircleV(p.position, 2, p.color);
+    }
 }
 
 void Game::Draw() {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    // 绘制墙壁
+    // 墙壁
     DrawRectangle(0, 0, 5, screenHeight, GRAY);
     DrawRectangle(screenWidth - 5, 0, 5, screenHeight, GRAY);
     DrawRectangle(0, 0, screenWidth, 5, GRAY);
     DrawRectangle(0, screenHeight - 5, screenWidth, 5, GRAY);
 
-    // 绘制游戏元素
-    ball.Draw();
+    // 游戏元素
+    for (auto& ball : balls) ball.Draw();
     paddle.Draw();
     for (auto& brick : bricks) brick.Draw();
+    for (auto& p : powerUps) p.Draw();
+    DrawParticles();
 
-    // 显示分数和生命
+    // UI
     DrawText(TextFormat("Score: %d", score), 10, 10, 20, DARKGRAY);
     DrawText(TextFormat("Lives: %d", lives), 10, 40, 20, DARKGRAY);
 
-    // 根据状态显示不同信息
+    // 状态提示
     switch (currentState) {
         case GameState::PLAYING:
             if (!ballLaunched) {
@@ -202,9 +325,7 @@ void Game::Draw() {
     EndDrawing();
 }
 
-void Game::Shutdown() {
-    // 目前无需额外清理
-}
+void Game::Shutdown() {}
 
 void Game::LoadConfig(const std::string& path) {
     std::ifstream f(path);
@@ -214,31 +335,15 @@ void Game::LoadConfig(const std::string& path) {
     }
     json config = json::parse(f);
 
-    // 读取窗口尺寸（仅保存，不实际改变窗口）
     screenWidth = config["window"]["width"];
     screenHeight = config["window"]["height"];
-    // 注意：窗口已在 main 中创建，如果希望使用配置的尺寸，需要修改 main.cpp 先读配置再创建窗口。
-    // 这里我们只是将值保存，后续绘制时可能用到（例如边界检测），但 main 中的窗口大小应与之匹配。
-    // 为简单，我们假设 main 中使用的尺寸与配置一致。如果不一致，边界可能出错。建议在 main 中先读取配置再创建窗口。
-    // 但由于我们还没有将配置读取移到 main，暂时只保存，后续会调整。
 
-    // 读取球参数
-    float ballRadius = config["ball"]["radius"];
-    float ballSpeedX = config["ball"]["speedX"];
-    float ballSpeedY = config["ball"]["speedY"];
-    // 重新创建 ball 对象（注意：ball 是成员，使用赋值）
-    ball = Ball({(float)screenWidth/2, (float)screenHeight/2}, {ballSpeedX, ballSpeedY}, ballRadius);
-    // 注意：重力、最大速度等参数如果需要，可以存储到 Ball 类的成员中，但当前 Ball 类没有这些成员，我们可以扩展 Ball 类，或者暂时忽略。
-    // 为了满足 PPT 要求，我们至少实现从配置文件读取基本参数。
-
-    // 读取板参数
     float paddleWidth = config["paddle"]["width"];
     float paddleHeight = config["paddle"]["height"];
     float paddleX = config["paddle"]["x"];
     float paddleY = config["paddle"]["y"];
     paddle = Paddle(paddleX, paddleY, paddleWidth, paddleHeight);
 
-    // 读取砖块参数
     int brickCols = config["bricks"]["cols"];
     float brickWidth = config["bricks"]["width"];
     float brickHeight = config["bricks"]["height"];
@@ -251,9 +356,5 @@ void Game::LoadConfig(const std::string& path) {
         bricks.emplace_back(startX + i * (brickWidth + spacingX), startY, brickWidth, brickHeight);
     }
 
-    // 读取游戏参数
     lives = config["game"]["initialLives"];
-    // score 保持为0，不覆盖
-    // scorePerBrick 可以保存到成员变量，但我们在 UpdatePlaying 中直接用了 10，可以改为从配置读取
-    // 为了演示，我们添加一个成员变量 scorePerBrick，在 Game.h 中添加 int scorePerBrick; 然后在 LoadConfig 中赋值。
 }
