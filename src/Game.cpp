@@ -66,6 +66,15 @@ void Game::HandleInput() {
 }
 
 void Game::Update() {
+    static float lastTime = GetTime();
+    float currentTime = GetTime();
+    deltaTime = currentTime - lastTime;
+    lastTime = currentTime;
+    if (deltaTime > 0.033f) deltaTime = 0.033f;   // 限制最大帧间隔
+
+    // 更新板的效果计时
+    paddle.Update(deltaTime);
+
     HandleInput();
 
     switch (currentState) {

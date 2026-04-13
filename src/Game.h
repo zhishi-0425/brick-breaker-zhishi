@@ -36,6 +36,8 @@ private:
     float ballMaxSpeed;
     float ballBounceForce;
 
+    float deltaTime; //计算两帧之间的时间差
+
     // 窗口尺寸
     int screenWidth;
     int screenHeight;
