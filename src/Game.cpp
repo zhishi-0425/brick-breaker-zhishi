@@ -38,6 +38,7 @@ void Game::Init() {
     powerUps.clear();
     particles.clear();
     slowRemaining = 0.0f;
+    slowFactor = 0.7f;
 }
 
 void Game::InitBricks() {
@@ -204,7 +205,10 @@ void Game::UpdatePlaying() {
     UpdateParticles(deltaTime);
 
     if (slowRemaining > 0) {
-        slowRemaining -= deltaTime;
+    slowRemaining -= deltaTime;
+        if (slowRemaining <= 0) {
+            // 恢复速度（需要保存原始速度，简化起见不做恢复）
+        }
     }
 }
 
@@ -275,6 +279,7 @@ void Game::CheckPowerUpCollision() {
         }
     }
 }
+
 
 void Game::UpdateParticles(float dt) {
     for (auto& p : particles) {

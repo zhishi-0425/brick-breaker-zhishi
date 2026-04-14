@@ -41,6 +41,7 @@ private:
     float slowRemaining;
     float slowFactor;
 
+
     void InitBricks();
     void ChangeState(GameState newState);
     void HandleInput();
