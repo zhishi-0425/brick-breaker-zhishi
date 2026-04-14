@@ -1,13 +1,13 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <string> 
+#include <string>
+#include <vector>
 #include "raylib.h"
 #include "Ball.h"
 #include "Paddle.h"
 #include "Brick.h"
 #include "PowerUp.h"
-#include <vector>
 
 enum class GameState {
     PLAYING,
@@ -16,7 +16,6 @@ enum class GameState {
     VICTORY
 };
 
-// 粒子结构
 struct Particle {
     Vector2 position;
     Vector2 velocity;
@@ -26,21 +25,21 @@ struct Particle {
 
 class Game {
 private:
-    std::vector<Ball> balls;          // 多球管理
+    std::vector<Ball> balls;
     Paddle paddle;
     std::vector<Brick> bricks;
-    std::vector<PowerUp> powerUps;    // 道具列表
-    std::vector<Particle> particles;  // 粒子列表
+    std::vector<PowerUp> powerUps;
+    std::vector<Particle> particles;
 
     GameState currentState;
-    bool ballLaunched;       // 是否已发射（主球）
+    bool ballLaunched;
     int score;
     int lives;
     int screenWidth;
     int screenHeight;
-    float deltaTime;         // 帧时间
-    float slowRemaining;     // 减速剩余时间
-    float slowFactor;        // 减速因子
+    float deltaTime;
+    float slowRemaining;
+    float slowFactor;
 
     void InitBricks();
     void ChangeState(GameState newState);

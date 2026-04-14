@@ -27,9 +27,12 @@ Game::~Game() {}
 
 void Game::Init() {
     balls.clear();
-    balls.emplace_back(Vector2{400, 500}, Vector2{0, 0}, 10);
+    // 创建一个球，速度为零，并放到板上方
+    balls.emplace_back(Vector2{0, 0}, Vector2{0, 0}, 10);
     ballLaunched = false;
     paddle = Paddle(350, 550, 100, 20);
+    // 将球放到板的正上方
+    balls[0].ResetToPaddle(paddle.GetRect().x + paddle.GetRect().width/2, paddle.GetRect().y);
     InitBricks();
     currentState = GameState::PLAYING;
     powerUps.clear();
@@ -53,14 +56,14 @@ void Game::ChangeState(GameState newState) {
 }
 
 void Game::HandleInput() {
-    // 重置
     if (IsKeyPressed(KEY_R)) {
         score = 0;
         lives = 3;
         balls.clear();
-        balls.emplace_back(Vector2{400, 500}, Vector2{0, 0}, 10);
+        balls.emplace_back(Vector2{0, 0}, Vector2{0, 0}, 10);
         ballLaunched = false;
         paddle = Paddle(350, 550, 100, 20);
+        balls[0].ResetToPaddle(paddle.GetRect().x + paddle.GetRect().width/2, paddle.GetRect().y);
         InitBricks();
         currentState = GameState::PLAYING;
         powerUps.clear();
@@ -69,7 +72,6 @@ void Game::HandleInput() {
         return;
     }
 
-    // 发射
     if (currentState == GameState::PLAYING && IsKeyPressed(KEY_SPACE) && !ballLaunched) {
         if (!balls.empty()) {
             balls[0].Launch(paddle.GetRect().x + paddle.GetRect().width/2, paddle.GetRect().y);
@@ -77,7 +79,6 @@ void Game::HandleInput() {
         }
     }
 
-    // 暂停
     if (currentState == GameState::PLAYING && IsKeyPressed(KEY_P)) {
         ChangeState(GameState::PAUSED);
     } else if (currentState == GameState::PAUSED && IsKeyPressed(KEY_P)) {
@@ -116,24 +117,20 @@ void Game::Update() {
 void Game::UpdatePlaying() {
     if (!ballLaunched) return;
 
-    // 板移动
     if (IsKeyDown(KEY_LEFT)) paddle.MoveLeft(5);
     if (IsKeyDown(KEY_RIGHT)) paddle.MoveRight(5);
 
-    // 所有球移动、边界
     for (auto& ball : balls) {
         ball.Move();
         ball.BounceEdge(screenWidth, screenHeight);
     }
 
-    // 球与板碰撞
     for (auto& ball : balls) {
         if (paddle.CheckCollision(ball)) {
             paddle.OnCollision(ball);
         }
     }
 
-    // 球与砖块碰撞（同一砖块只处理一次）
     for (auto& brick : bricks) {
         if (!brick.IsActive()) continue;
         bool hit = false;
@@ -168,7 +165,7 @@ void Game::UpdatePlaying() {
         }
     }
 
-    // 球掉出屏幕：移除超出底部的球
+    // 球掉出屏幕
     bool anyBallActive = false;
     for (auto it = balls.begin(); it != balls.end(); ) {
         if (it->GetPosition().y + it->GetRadius() > screenHeight) {
@@ -184,7 +181,8 @@ void Game::UpdatePlaying() {
             ChangeState(GameState::GAMEOVER);
         } else {
             balls.clear();
-            balls.emplace_back(Vector2{400, 500}, Vector2{0, 0}, 10);
+            balls.emplace_back(Vector2{0, 0}, Vector2{0, 0}, 10);
+            balls[0].ResetToPaddle(paddle.GetRect().x + paddle.GetRect().width/2, paddle.GetRect().y);
             ballLaunched = false;
         }
     }
@@ -201,12 +199,10 @@ void Game::UpdatePlaying() {
         ChangeState(GameState::VICTORY);
     }
 
-    // 道具更新
     UpdatePowerUps(deltaTime);
     CheckPowerUpCollision();
     UpdateParticles(deltaTime);
 
-    // 减速效果倒计时
     if (slowRemaining > 0) {
         slowRemaining -= deltaTime;
     }
@@ -234,16 +230,35 @@ void Game::CheckPowerUpCollision() {
                     paddle.Extend(40.0f, 5.0f);
                     break;
                 case PowerUpType::MULTI_BALL: {
-                    std::vector<Ball> newBalls;
+                    // 找出所有运动中的球（速度大小 > 0.5）
+                    std::vector<Vector2> movingSpeeds;
                     for (const auto& b : balls) {
-                        Vector2 pos = b.GetPosition();
                         Vector2 spd = b.GetSpeed();
+                        float mag = sqrt(spd.x*spd.x + spd.y*spd.y);
+                        if (mag > 0.5f) {
+                            movingSpeeds.push_back(spd);
+                        }
+                    }
+                    // 如果没有运动球，则使用默认速度
+                    if (movingSpeeds.empty()) {
+                        movingSpeeds.push_back({5, -5});
+                    }
+                    // 为每个运动球生成一个新球（生成在板的上方）
+                    std::vector<Ball> newBalls;
+                    for (const auto& spd : movingSpeeds) {
+                        float x = paddle.GetRect().x + paddle.GetRect().width / 2;
+                        float y = paddle.GetRect().y - 15;  // 板的上方
                         float angle = (rand() % 60 - 30) * 3.14159f / 180.0f;
                         float cosA = cos(angle);
                         float sinA = sin(angle);
                         Vector2 newSpd = { spd.x * cosA - spd.y * sinA,
                                            spd.x * sinA + spd.y * cosA };
-                        newBalls.emplace_back(pos, newSpd, b.GetRadius());
+                        // 确保新球速度不太小
+                        if (fabs(newSpd.x) < 1.0f) newSpd.x = (rand() % 2 == 0 ? 4 : -4);
+                        if (fabs(newSpd.y) < 1.0f) newSpd.y = (rand() % 2 == 0 ? 4 : -4);
+                        Ball newBall(Vector2{x, y}, newSpd, 10);
+                        newBall.Activate();   // 关键：设置为已发射状态
+                        newBalls.push_back(newBall);
                     }
                     balls.insert(balls.end(), newBalls.begin(), newBalls.end());
                     break;
@@ -282,24 +297,20 @@ void Game::Draw() {
     BeginDrawing();
     ClearBackground(RAYWHITE);
 
-    // 墙壁
     DrawRectangle(0, 0, 5, screenHeight, GRAY);
     DrawRectangle(screenWidth - 5, 0, 5, screenHeight, GRAY);
     DrawRectangle(0, 0, screenWidth, 5, GRAY);
     DrawRectangle(0, screenHeight - 5, screenWidth, 5, GRAY);
 
-    // 游戏元素
     for (auto& ball : balls) ball.Draw();
     paddle.Draw();
     for (auto& brick : bricks) brick.Draw();
     for (auto& p : powerUps) p.Draw();
     DrawParticles();
 
-    // UI
     DrawText(TextFormat("Score: %d", score), 10, 10, 20, DARKGRAY);
     DrawText(TextFormat("Lives: %d", lives), 10, 40, 20, DARKGRAY);
 
-    // 状态提示
     switch (currentState) {
         case GameState::PLAYING:
             if (!ballLaunched) {
