@@ -22,6 +22,8 @@ struct Particle {
     Color color;
     float life;
 };
+void UpdateParticles(float dt);
+void DrawParticles();
 
 class Game {
 private:
@@ -40,6 +42,11 @@ private:
     float deltaTime;
     float slowRemaining;
     float slowFactor;
+    float powerUpDropRate;
+    float paddleExtendWidth;
+    float paddleExtendDuration;
+    float slowFactorValue;
+    float slowDuration;
 
 
     void InitBricks();

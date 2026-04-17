@@ -32,5 +32,23 @@
     "game": {
         "initialLives": 3,
         "scorePerBrick": 10
+    },
+
+    "powerups": {
+        "paddle_extend": {
+            "extra_width": 40,
+            "duration": 5.0,
+            "drop_rate": 0.3
+        },
+        "multi_ball": {
+            "extra_balls": 1,
+            "duration": 0,
+            "drop_rate": 0.3
+        },
+        "slow_ball": {
+            "speed_factor": 0.7,
+            "duration": 5.0,
+            "drop_rate": 0.3
+        }
     }
 }

@@ -157,7 +157,7 @@ void Game::UpdatePlaying() {
             }
 
             // 30% 概率生成道具
-            if (rand() % 100 < 30) {
+            if ((float)(rand() % 100) / 100.0f < powerUpDropRate) {
                 PowerUpType type = static_cast<PowerUpType>(rand() % 3);
                 float x = brick.GetRect().x + brick.GetRect().width / 2;
                 float y = brick.GetRect().y;
@@ -231,7 +231,7 @@ void Game::CheckPowerUpCollision() {
         if (CheckCollisionCircleRec(p.position, 12, paddle.GetRect())) {
             switch (p.type) {
                 case PowerUpType::PADDLE_EXTEND:
-                    paddle.Extend(40.0f, 5.0f);
+                    paddle.Extend(paddleExtendWidth, paddleExtendDuration);
                     break;
                 case PowerUpType::MULTI_BALL: {
                     // 找出所有运动中的球（速度大小 > 0.5）
@@ -268,7 +268,8 @@ void Game::CheckPowerUpCollision() {
                     break;
                 }
                 case PowerUpType::SLOW_BALL:
-                    slowRemaining = 5.0f;
+                    slowRemaining = slowDuration;
+                    slowFactor = slowFactorValue;
                     for (auto& b : balls) {
                         Vector2 spd = b.GetSpeed();
                         b.SetSpeed({spd.x * slowFactor, spd.y * slowFactor});
@@ -373,4 +374,16 @@ void Game::LoadConfig(const std::string& path) {
     }
 
     lives = config["game"]["initialLives"];
+
+        // 读取道具参数
+    if (config.contains("powerups")) {
+        auto& p = config["powerups"];
+        powerUpDropRate = p["paddle_extend"]["drop_rate"];
+        paddleExtendWidth = p["paddle_extend"]["extra_width"];
+        paddleExtendDuration = p["paddle_extend"]["duration"];
+        slowFactorValue = p["slow_ball"]["speed_factor"];
+        slowDuration = p["slow_ball"]["duration"];
+        // 多球道具没有额外参数，掉落率可共用
+    }
+
 }
