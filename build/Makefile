@@ -177,29 +177,53 @@ src/Brick.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/Brick.cpp.s
 .PHONY : src/Brick.cpp.s
 
-src/GameState.o: src/GameState.cpp.o
-.PHONY : src/GameState.o
+src/Game.o: src/Game.cpp.o
+.PHONY : src/Game.o
 
 # target to build an object file
-src/GameState.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/GameState.cpp.o
-.PHONY : src/GameState.cpp.o
+src/Game.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/Game.cpp.o
+.PHONY : src/Game.cpp.o
 
-src/GameState.i: src/GameState.cpp.i
-.PHONY : src/GameState.i
+src/Game.i: src/Game.cpp.i
+.PHONY : src/Game.i
 
 # target to preprocess a source file
-src/GameState.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/GameState.cpp.i
-.PHONY : src/GameState.cpp.i
+src/Game.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/Game.cpp.i
+.PHONY : src/Game.cpp.i
 
-src/GameState.s: src/GameState.cpp.s
-.PHONY : src/GameState.s
+src/Game.s: src/Game.cpp.s
+.PHONY : src/Game.s
 
 # target to generate assembly for a file
-src/GameState.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/GameState.cpp.s
-.PHONY : src/GameState.cpp.s
+src/Game.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/Game.cpp.s
+.PHONY : src/Game.cpp.s
+
+src/NetworkManager.o: src/NetworkManager.cpp.o
+.PHONY : src/NetworkManager.o
+
+# target to build an object file
+src/NetworkManager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.o
+.PHONY : src/NetworkManager.cpp.o
+
+src/NetworkManager.i: src/NetworkManager.cpp.i
+.PHONY : src/NetworkManager.i
+
+# target to preprocess a source file
+src/NetworkManager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.i
+.PHONY : src/NetworkManager.cpp.i
+
+src/NetworkManager.s: src/NetworkManager.cpp.s
+.PHONY : src/NetworkManager.s
+
+# target to generate assembly for a file
+src/NetworkManager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.s
+.PHONY : src/NetworkManager.cpp.s
 
 src/Paddle.o: src/Paddle.cpp.o
 .PHONY : src/Paddle.o
@@ -224,6 +248,30 @@ src/Paddle.s: src/Paddle.cpp.s
 src/Paddle.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/Paddle.cpp.s
 .PHONY : src/Paddle.cpp.s
+
+src/PowerUp.o: src/PowerUp.cpp.o
+.PHONY : src/PowerUp.o
+
+# target to build an object file
+src/PowerUp.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.o
+.PHONY : src/PowerUp.cpp.o
+
+src/PowerUp.i: src/PowerUp.cpp.i
+.PHONY : src/PowerUp.i
+
+# target to preprocess a source file
+src/PowerUp.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.i
+.PHONY : src/PowerUp.cpp.i
+
+src/PowerUp.s: src/PowerUp.cpp.s
+.PHONY : src/PowerUp.s
+
+# target to generate assembly for a file
+src/PowerUp.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/breakout_week2.dir/build.make CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.s
+.PHONY : src/PowerUp.cpp.s
 
 src/main.o: src/main.cpp.o
 .PHONY : src/main.o
@@ -264,12 +312,18 @@ help:
 	@echo "... src/Brick.o"
 	@echo "... src/Brick.i"
 	@echo "... src/Brick.s"
-	@echo "... src/GameState.o"
-	@echo "... src/GameState.i"
-	@echo "... src/GameState.s"
+	@echo "... src/Game.o"
+	@echo "... src/Game.i"
+	@echo "... src/Game.s"
+	@echo "... src/NetworkManager.o"
+	@echo "... src/NetworkManager.i"
+	@echo "... src/NetworkManager.s"
 	@echo "... src/Paddle.o"
 	@echo "... src/Paddle.i"
 	@echo "... src/Paddle.s"
+	@echo "... src/PowerUp.o"
+	@echo "... src/PowerUp.i"
+	@echo "... src/PowerUp.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

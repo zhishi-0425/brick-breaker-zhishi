@@ -10,8 +10,10 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/zhishi/breakout_week2/src/Ball.cpp" "CMakeFiles/breakout_week2.dir/src/Ball.cpp.o" "gcc" "CMakeFiles/breakout_week2.dir/src/Ball.cpp.o.d"
   "/home/zhishi/breakout_week2/src/Brick.cpp" "CMakeFiles/breakout_week2.dir/src/Brick.cpp.o" "gcc" "CMakeFiles/breakout_week2.dir/src/Brick.cpp.o.d"
-  "/home/zhishi/breakout_week2/src/GameState.cpp" "CMakeFiles/breakout_week2.dir/src/GameState.cpp.o" "gcc" "CMakeFiles/breakout_week2.dir/src/GameState.cpp.o.d"
+  "/home/zhishi/breakout_week2/src/Game.cpp" "CMakeFiles/breakout_week2.dir/src/Game.cpp.o" "gcc" "CMakeFiles/breakout_week2.dir/src/Game.cpp.o.d"
+  "/home/zhishi/breakout_week2/src/NetworkManager.cpp" "CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.o" "gcc" "CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.o.d"
   "/home/zhishi/breakout_week2/src/Paddle.cpp" "CMakeFiles/breakout_week2.dir/src/Paddle.cpp.o" "gcc" "CMakeFiles/breakout_week2.dir/src/Paddle.cpp.o.d"
+  "/home/zhishi/breakout_week2/src/PowerUp.cpp" "CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.o" "gcc" "CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.o.d"
   "/home/zhishi/breakout_week2/src/main.cpp" "CMakeFiles/breakout_week2.dir/src/main.cpp.o" "gcc" "CMakeFiles/breakout_week2.dir/src/main.cpp.o.d"
   )
 

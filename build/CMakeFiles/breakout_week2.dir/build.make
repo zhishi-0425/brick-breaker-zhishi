@@ -128,19 +128,47 @@ CMakeFiles/breakout_week2.dir/src/Brick.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/breakout_week2.dir/src/Brick.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zhishi/breakout_week2/src/Brick.cpp -o CMakeFiles/breakout_week2.dir/src/Brick.cpp.s
 
-CMakeFiles/breakout_week2.dir/src/GameState.cpp.o: CMakeFiles/breakout_week2.dir/flags.make
-CMakeFiles/breakout_week2.dir/src/GameState.cpp.o: /home/zhishi/breakout_week2/src/GameState.cpp
-CMakeFiles/breakout_week2.dir/src/GameState.cpp.o: CMakeFiles/breakout_week2.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zhishi/breakout_week2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/breakout_week2.dir/src/GameState.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/breakout_week2.dir/src/GameState.cpp.o -MF CMakeFiles/breakout_week2.dir/src/GameState.cpp.o.d -o CMakeFiles/breakout_week2.dir/src/GameState.cpp.o -c /home/zhishi/breakout_week2/src/GameState.cpp
+CMakeFiles/breakout_week2.dir/src/Game.cpp.o: CMakeFiles/breakout_week2.dir/flags.make
+CMakeFiles/breakout_week2.dir/src/Game.cpp.o: /home/zhishi/breakout_week2/src/Game.cpp
+CMakeFiles/breakout_week2.dir/src/Game.cpp.o: CMakeFiles/breakout_week2.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zhishi/breakout_week2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/breakout_week2.dir/src/Game.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/breakout_week2.dir/src/Game.cpp.o -MF CMakeFiles/breakout_week2.dir/src/Game.cpp.o.d -o CMakeFiles/breakout_week2.dir/src/Game.cpp.o -c /home/zhishi/breakout_week2/src/Game.cpp
 
-CMakeFiles/breakout_week2.dir/src/GameState.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/breakout_week2.dir/src/GameState.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zhishi/breakout_week2/src/GameState.cpp > CMakeFiles/breakout_week2.dir/src/GameState.cpp.i
+CMakeFiles/breakout_week2.dir/src/Game.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/breakout_week2.dir/src/Game.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zhishi/breakout_week2/src/Game.cpp > CMakeFiles/breakout_week2.dir/src/Game.cpp.i
 
-CMakeFiles/breakout_week2.dir/src/GameState.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/breakout_week2.dir/src/GameState.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zhishi/breakout_week2/src/GameState.cpp -o CMakeFiles/breakout_week2.dir/src/GameState.cpp.s
+CMakeFiles/breakout_week2.dir/src/Game.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/breakout_week2.dir/src/Game.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zhishi/breakout_week2/src/Game.cpp -o CMakeFiles/breakout_week2.dir/src/Game.cpp.s
+
+CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.o: CMakeFiles/breakout_week2.dir/flags.make
+CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.o: /home/zhishi/breakout_week2/src/PowerUp.cpp
+CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.o: CMakeFiles/breakout_week2.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zhishi/breakout_week2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.o -MF CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.o.d -o CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.o -c /home/zhishi/breakout_week2/src/PowerUp.cpp
+
+CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zhishi/breakout_week2/src/PowerUp.cpp > CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.i
+
+CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zhishi/breakout_week2/src/PowerUp.cpp -o CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.s
+
+CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.o: CMakeFiles/breakout_week2.dir/flags.make
+CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.o: /home/zhishi/breakout_week2/src/NetworkManager.cpp
+CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.o: CMakeFiles/breakout_week2.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/home/zhishi/breakout_week2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.o -MF CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.o.d -o CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.o -c /home/zhishi/breakout_week2/src/NetworkManager.cpp
+
+CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/zhishi/breakout_week2/src/NetworkManager.cpp > CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.i
+
+CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/zhishi/breakout_week2/src/NetworkManager.cpp -o CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.s
 
 # Object files for target breakout_week2
 breakout_week2_OBJECTS = \
@@ -148,7 +176,9 @@ breakout_week2_OBJECTS = \
 "CMakeFiles/breakout_week2.dir/src/Ball.cpp.o" \
 "CMakeFiles/breakout_week2.dir/src/Paddle.cpp.o" \
 "CMakeFiles/breakout_week2.dir/src/Brick.cpp.o" \
-"CMakeFiles/breakout_week2.dir/src/GameState.cpp.o"
+"CMakeFiles/breakout_week2.dir/src/Game.cpp.o" \
+"CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.o" \
+"CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.o"
 
 # External object files for target breakout_week2
 breakout_week2_EXTERNAL_OBJECTS =
@@ -157,13 +187,12 @@ breakout_week2: CMakeFiles/breakout_week2.dir/src/main.cpp.o
 breakout_week2: CMakeFiles/breakout_week2.dir/src/Ball.cpp.o
 breakout_week2: CMakeFiles/breakout_week2.dir/src/Paddle.cpp.o
 breakout_week2: CMakeFiles/breakout_week2.dir/src/Brick.cpp.o
-breakout_week2: CMakeFiles/breakout_week2.dir/src/GameState.cpp.o
+breakout_week2: CMakeFiles/breakout_week2.dir/src/Game.cpp.o
+breakout_week2: CMakeFiles/breakout_week2.dir/src/PowerUp.cpp.o
+breakout_week2: CMakeFiles/breakout_week2.dir/src/NetworkManager.cpp.o
 breakout_week2: CMakeFiles/breakout_week2.dir/build.make
-breakout_week2: /usr/local/lib/libraylib.a
-breakout_week2: /usr/lib/x86_64-linux-gnu/libX11.so
-breakout_week2: /usr/lib/x86_64-linux-gnu/libXext.so
 breakout_week2: CMakeFiles/breakout_week2.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/zhishi/breakout_week2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable breakout_week2"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/home/zhishi/breakout_week2/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX executable breakout_week2"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/breakout_week2.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
