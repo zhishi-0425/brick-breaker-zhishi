@@ -73,7 +73,7 @@ void Ball::Launch(float paddleX, float paddleY) {
     // 将球放在板中央上方
     position.x = paddleX;
     position.y = paddleY - radius - 5;
-    speed = {2, -2};   // 固定初速度，可调整
+    speed = {5, -5};   // 固定初速度，可调整
     launched = true;
 }
 
@@ -82,4 +82,8 @@ void Ball::ResetToPaddle(float paddleX, float paddleY) {
     position.y = paddleY - radius - 5;
     speed = {0, 0};
     launched = false;
+}
+
+void Ball::Activate() {
+    launched = true;
 }

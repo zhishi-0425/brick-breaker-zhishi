@@ -8,10 +8,12 @@
 #include <ctime>
 #include <cstring>
 #include <thread>
+#include <future>
+#include <mutex>
 
 using json = nlohmann::json;
 
-// 模拟耗时加载任务（例如加载纹理）
+// 模拟耗时加载任务
 void SimulateLoading() {
     std::this_thread::sleep_for(std::chrono::seconds(2));
 }
@@ -48,10 +50,12 @@ Game::Game()
       interpBallX(400.0f),
       interpBallY(300.0f),
       interpOpponentPaddleX(350.0f),
-      loadState(LoadState::IDLE), 
+      loadState(LoadState::IDLE),
       loadCompleted(false),
-      firstStateReceived(false) {
+      firstStateReceived(false),
+      particleCount(0) {
     srand(time(nullptr));
+    for (int i = 0; i < MAX_PARTICLES; i++) particleActive[i] = false;
 }
 
 Game::~Game() {}
@@ -72,14 +76,17 @@ void Game::Init(bool asHost, const char* serverIp) {
         // 主机完整初始化
         LoadConfig("config.json");
         balls.clear();
+        // 动态计算球初始位置
         float startX = paddle.GetRect().x + paddle.GetRect().width / 2;
-        float startY = paddle.GetRect().y - 15;   // 板顶部上方15像素
+        float startY = paddle.GetRect().y - 15;
         balls.emplace_back(Vector2{startX, startY}, Vector2{0, 0}, 10);
         ballLaunched = false;
         paddle = Paddle(350, 550, 100, 20);
         InitBricks();
         powerUps.clear();
-        particles.clear();
+        // 重置粒子池
+        for (int i = 0; i < MAX_PARTICLES; i++) particleActive[i] = false;
+        particleCount = 0;
         slowRemaining = 0.0f;
         originalSpeeds.clear();
         currentState = GameState::PLAYING;
@@ -97,7 +104,6 @@ void Game::Init(bool asHost, const char* serverIp) {
                 firstStateReceived = true;
 
                 // 完全替换客户端数据
-                // 球
                 balls.clear();
                 for (int i = 0; i < currentGameState.ballCount && i < MAX_BALLS; ++i) {
                     Vector2 pos{ currentGameState.ballsX[i], currentGameState.ballsY[i] };
@@ -105,11 +111,10 @@ void Game::Init(bool asHost, const char* serverIp) {
                     balls.emplace_back(pos, spd, 10);
                     balls.back().Activate();
                 }
-                // 分数和生命
                 score = currentGameState.scoreLeft;
                 lives = currentGameState.livesLeft;
                 opponentPaddleX = currentGameState.paddleRightX;
-                // 砖块
+
                 int idx = 0;
                 for (int row = 0; row < brickRows; ++row) {
                     for (int col = 0; col < brickCols; ++col) {
@@ -120,7 +125,7 @@ void Game::Init(bool asHost, const char* serverIp) {
                         ++idx;
                     }
                 }
-                // 道具
+
                 powerUps.clear();
                 for (int i = 0; i < currentGameState.powerUpCount && i < MAX_POWERUPS; ++i) {
                     PowerUpType type = (PowerUpType)currentGameState.powerUpType[i];
@@ -128,7 +133,7 @@ void Game::Init(bool asHost, const char* serverIp) {
                     p.duration = currentGameState.powerUpDuration[i];
                     powerUps.push_back(p);
                 }
-                // 游戏状态
+
                 if (currentGameState.gameRunning) {
                     if (currentState != GameState::PLAYING) currentState = GameState::PLAYING;
                 } else {
@@ -136,18 +141,19 @@ void Game::Init(bool asHost, const char* serverIp) {
                 }
             }
         });
-        // 客户端初始化本地资源
+        // 客户端初始化
         LoadConfig("config.json");
         balls.clear();
         float startX = paddle.GetRect().x + paddle.GetRect().width / 2;
-        float startY = paddle.GetRect().y - 15;   // 板顶部上方15像素
+        float startY = paddle.GetRect().y - 15;
         balls.emplace_back(Vector2{startX, startY}, Vector2{0, 0}, 10);
         ballLaunched = false;
         paddle = Paddle(350, 550, 100, 20);
-        InitBricks();          // 必须调用，使 bricks 有正确的数量
+        InitBricks();
         currentState = GameState::PLAYING;
         powerUps.clear();
-        particles.clear();
+        for (int i = 0; i < MAX_PARTICLES; i++) particleActive[i] = false;
+        particleCount = 0;
         slowRemaining = 0.0f;
     }
 }
@@ -177,19 +183,24 @@ void Game::HandleInput() {
         if (isHost) {
             score = 0;
             lives = 3;
-            balls.clear();
-            balls.emplace_back(Vector2{400, 450}, Vector2{0, 0}, 10);
-            ballLaunched = false;
+            // 先重置板的位置
             paddle = Paddle(350, 550, 100, 20);
+            // 然后根据重置后的板计算球的起始位置
+            float startX = paddle.GetRect().x + paddle.GetRect().width / 2;
+            float startY = paddle.GetRect().y - 15;
+            balls.clear();
+            balls.emplace_back(Vector2{startX, startY}, Vector2{0, 0}, 10);
+            ballLaunched = false;
             InitBricks();
             currentState = GameState::PLAYING;
             powerUps.clear();
-            particles.clear();
+            for (int i = 0; i < MAX_PARTICLES; i++) particleActive[i] = false;
+            particleCount = 0;
             slowRemaining = 0.0f;
             originalSpeeds.clear();
         }
-        return;
-    }
+    return;
+}
 
     if (isHost && currentState == GameState::PLAYING && IsKeyPressed(KEY_SPACE) && !ballLaunched) {
         if (!balls.empty()) {
@@ -213,7 +224,8 @@ void Game::Update() {
     if (deltaTime > 0.033f) deltaTime = 0.033f;
 
     paddle.Update(deltaTime);
-    // 异步加载处理（按 L 键触发）
+
+    // 异步加载
     if (IsKeyPressed(KEY_L) && loadState == LoadState::IDLE) {
         {
             std::lock_guard<std::mutex> lock(loadMutex);
@@ -231,12 +243,12 @@ void Game::Update() {
                 loadState = LoadState::IDLE;
                 loadCompleted = true;
             }
-            // 加载完成后改变所有砖块颜色（演示效果）
             for (auto& brick : bricks) {
                 brick.SetColor(WHITE);
             }
         }
     }
+
     HandleInput();
     net.Update();
 
@@ -255,11 +267,10 @@ void Game::Update() {
                 UpdateVictory();
                 break;
         }
-        // 主机发送完整状态
+        // 主机发送状态（略）
         if (ballLaunched && net.IsConnected()) {
             GameStateMessage msg;
             msg.timestamp = GetTime();
-
             msg.ballCount = (int)balls.size();
             if (msg.ballCount > MAX_BALLS) msg.ballCount = MAX_BALLS;
             for (int i = 0; i < msg.ballCount; ++i) {
@@ -268,7 +279,6 @@ void Game::Update() {
                 msg.ballsSpeedX[i] = balls[i].GetSpeed().x;
                 msg.ballsSpeedY[i] = balls[i].GetSpeed().y;
             }
-
             msg.paddleLeftX = paddle.GetRect().x;
             msg.paddleRightX = opponentPaddleX;
             msg.scoreLeft = score;
@@ -298,11 +308,22 @@ void Game::Update() {
                 msg.powerUpType[i] = (int)powerUps[i].type;
                 msg.powerUpDuration[i] = powerUps[i].duration;
             }
-
             net.SendToPeer(&msg, sizeof(msg));
         }
     } else {
         UpdateClient();
+    }
+
+    // 性能测量
+    static float frameTimeSum = 0.0f;
+    static int frameCount = 0;
+    frameTimeSum += GetFrameTime() * 1000.0f;
+    frameCount++;
+    if (frameCount >= 60) {
+        float avg = frameTimeSum / frameCount;
+        TraceLog(LOG_INFO, "Average frame time: %.3f ms", avg);
+        frameTimeSum = 0.0f;
+        frameCount = 0;
     }
 }
 
@@ -335,15 +356,28 @@ void Game::UpdatePlaying() {
         if (hit) {
             brick.SetActive(false);
             score += 10;
+
+            // 对象池生成粒子
             for (int i = 0; i < 10; i++) {
+                int slot = -1;
+                for (int j = 0; j < MAX_PARTICLES; j++) {
+                    if (!particleActive[j]) {
+                        slot = j;
+                        break;
+                    }
+                }
+                if (slot == -1) break;
                 Particle p;
                 p.position = { brick.GetRect().x + rand() % (int)brick.GetRect().width,
                                brick.GetRect().y + rand() % (int)brick.GetRect().height };
                 p.velocity = { (rand()%100 - 50)/10.0f, (rand()%100 - 50)/10.0f };
                 p.color = brick.GetColor();
                 p.life = 0.5f;
-                particles.push_back(p);
+                particles[slot] = p;
+                particleActive[slot] = true;
+                particleCount++;
             }
+
             if ((float)(rand() % 100) / 100.0f < powerUpDropRate) {
                 PowerUpType type = static_cast<PowerUpType>(rand() % 3);
                 float x = brick.GetRect().x + brick.GetRect().width / 2;
@@ -368,8 +402,9 @@ void Game::UpdatePlaying() {
             ChangeState(GameState::GAMEOVER);
         } else {
             balls.clear();
-            balls.emplace_back(Vector2{400, 450}, Vector2{0, 0}, 10);
-            balls[0].ResetToPaddle(paddle.GetRect().x + paddle.GetRect().width/2, paddle.GetRect().y);
+            float startX = paddle.GetRect().x + paddle.GetRect().width / 2;
+            float startY = paddle.GetRect().y - 15;
+            balls.emplace_back(Vector2{startX, startY}, Vector2{0, 0}, 10);
             ballLaunched = false;
         }
     }
@@ -477,19 +512,24 @@ void Game::CheckPowerUpCollision() {
 }
 
 void Game::UpdateParticles(float dt) {
-    for (auto& p : particles) {
-        p.position.x += p.velocity.x * dt;
-        p.position.y += p.velocity.y * dt;
-        p.life -= dt;
+    for (int i = 0; i < MAX_PARTICLES; i++) {
+        if (particleActive[i]) {
+            particles[i].position.x += particles[i].velocity.x * dt;
+            particles[i].position.y += particles[i].velocity.y * dt;
+            particles[i].life -= dt;
+            if (particles[i].life <= 0) {
+                particleActive[i] = false;
+                particleCount--;
+            }
+        }
     }
-    particles.erase(std::remove_if(particles.begin(), particles.end(),
-                  [](const Particle& p) { return p.life <= 0; }),
-                  particles.end());
 }
 
 void Game::DrawParticles() {
-    for (auto& p : particles) {
-        DrawCircleV(p.position, 2, p.color);
+    for (int i = 0; i < MAX_PARTICLES; i++) {
+        if (particleActive[i]) {
+            DrawCircleV(particles[i].position, 2, particles[i].color);
+        }
     }
 }
 
@@ -501,24 +541,20 @@ void Game::Draw() {
     DrawRectangle(0, 0, screenWidth, 5, GRAY);
     DrawRectangle(0, screenHeight - 5, screenWidth, 5, GRAY);
 
-    // 砖块
     for (auto& brick : bricks) brick.Draw();
 
     if (isHost) {
         for (auto& ball : balls) ball.Draw();
         paddle.Draw();
-        // 仅在双人模式（有客户端连接）时才绘制对手板，否则不绘制
         if (net.IsConnected()) {
             DrawRectangle(opponentPaddleX, paddle.GetRect().y, paddle.GetRect().width, paddle.GetRect().height, SKYBLUE);
         }
     } else {
-        // 客户端：使用接收到的状态绘制所有球
         if (firstStateReceived) {
             for (int i = 0; i < currentGameState.ballCount && i < MAX_BALLS; ++i) {
                 DrawCircleV(Vector2{currentGameState.ballsX[i], currentGameState.ballsY[i]}, 10, RED);
             }
         } else {
-            // 未收到任何状态时，显示一个默认球
             DrawCircleV(Vector2{400, 300}, 10, RED);
         }
         paddle.Draw();

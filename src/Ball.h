@@ -15,6 +15,8 @@ public:
     void Draw();
     void BounceEdge(int screenWidth, int screenHeight);
 
+    void Activate();   // 将 launched 设为 true，使球开始运动
+    
     // 新增：球与砖块碰撞检测
     bool CheckBrickCollision(Rectangle brickRect);
 

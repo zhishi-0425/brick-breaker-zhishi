@@ -20,14 +20,14 @@
         "speed": 5
     },
     "bricks": {
-        "rows": 1,
+        "rows": 5,
         "cols": 8,
-        "width": 80,
-        "height": 30,
-        "startX": 50,
-        "startY": 100,
-        "spacingX": 15,
-        "spacingY": 0
+        "width": 70,
+        "height": 25,
+        "startX": -1,        
+        "startY": 80,
+        "spacingX": 10,
+        "spacingY": 5
     },
     "game": {
         "initialLives": 3,
@@ -38,17 +38,17 @@
         "paddle_extend": {
             "extra_width": 40,
             "duration": 5.0,
-            "drop_rate": 0.3
+            "drop_rate": 0.5
         },
         "multi_ball": {
             "extra_balls": 1,
             "duration": 0,
-            "drop_rate": 0.3
+            "drop_rate": 0.5
         },
         "slow_ball": {
             "speed_factor": 0.7,
             "duration": 5.0,
-            "drop_rate": 0.3
+            "drop_rate": 0.5
         }
     }
 }

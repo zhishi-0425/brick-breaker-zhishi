@@ -33,7 +33,10 @@ private:
     Paddle paddle;
     std::vector<Brick> bricks;
     std::vector<PowerUp> powerUps;
-    std::vector<Particle> particles;
+    static const int MAX_PARTICLES = 500;
+    Particle particles[MAX_PARTICLES];
+    bool particleActive[MAX_PARTICLES];
+    int particleCount;  // 可选，用于快速统计
 
     GameState currentState;
     bool ballLaunched;
